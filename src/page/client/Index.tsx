@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import "./clientForm.css"
 import QRCode from 'qrcode.react';
+import jwtDecode from 'jwt-decode';
+
 const Formulario: React.FC = () => {
   const [client, setClient] = useState<number>(0);
   const [email, setEmail] = useState<string>('');
@@ -15,6 +17,9 @@ const Formulario: React.FC = () => {
   const [provincia, setProvincia] = useState<string>('');
   const [observation, setObservation] = useState<string>('');
 const [idQr,setIdQr]=useState("")
+const token = localStorage.getItem('token');
+const decodeToken= token&&jwtDecode(token)
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = {
@@ -33,8 +38,7 @@ const [idQr,setIdQr]=useState("")
 
     try {
       // Obtener token del local storage
-      const token = localStorage.getItem('token');
-
+      
       // Configurar headers con el token
       const config = {
         headers: {
@@ -53,12 +57,14 @@ const [idQr,setIdQr]=useState("")
 
   return (
     <>
-    {!idQr?
+    {idQr?
     <div className="qr">      
       <QRCode value={idQr} size={300}  />
     </div>
     :
+    
     <form onSubmit={handleSubmit}>
+      <h1>Bienvenido:</h1>
       <label className="Formitem">
         Email:
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} />

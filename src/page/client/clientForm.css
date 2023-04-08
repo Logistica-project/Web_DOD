@@ -64,5 +64,5 @@ button {
 button:hover {
   background-color: #fff;
   color: #0099ff;
-  border: 1px solid #0099ff;
+  outline: 1px solid #0099ff;
 }

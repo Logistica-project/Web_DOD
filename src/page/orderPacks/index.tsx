@@ -7,6 +7,10 @@ interface PackageData {
   street: string;
   cp: number;
   telephone: number;
+  callP:number;
+  statusPack:number;
+
+  err:boolean;
 }
 
 
@@ -22,16 +26,23 @@ const PackagePedir = () => {
     try {
       const response = await axios.get(`http://localhost:3001/${packageId}`);
       console.log(response);
-      
-      setPackageData(response.data[0]);
+ const data=response.data.length?response.data[0]:{err:true}
+      setPackageData(data);
     } catch (error) {
       console.error(error);
       setPackageData(null);
     }
   };
 
-  const handleOrderClick = () => {
-
+  const handleOrderClick = async () => {
+    try {
+      const response = await axios.put(`http://localhost:3001/orderPack/${packageId}`);
+      console.log(response);
+      console.log(response);
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -45,16 +56,31 @@ const PackagePedir = () => {
       />
       <button onClick={handleVerifyClick}>Verificar</button>
 
-      {packageData && (
+
+      {(packageData?.callP ===0 && !packageData.err) &&(
         <div>
-          <h2>Datos de envio</h2>
+          <h2>Datos de envió</h2>
           <p>Destinatario: {packageData.destinatario}</p>
           <p>Domicilio: {packageData.street}</p>
           <p>Cod. Postal: {packageData.cp}</p>
           <p>Teléfono: {packageData.telephone}</p>
-          <button onClick={handleOrderClick}>Pedir</button>
+          <button disabled={packageData.statusPack!==7} onClick={handleOrderClick}>Pedir</button>
         </div>
       )}
+
+      
+     {packageData?.callP ===1
+     && <div>
+        <h2>EL paquete ya fue pedido</h2>
+      </div>
+      }
+
+    {packageData?.err
+     && <div>
+        <h2>Este paquete no existe</h2>
+      </div>
+      }
+
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
 import initializeApp from '../../config';
+import jwtDecode from 'jwt-decode';
+import axios from 'axios';
 initializeApp()
 interface DashboardData {
   rider_activos?: number;
@@ -15,16 +17,79 @@ interface DashboardData {
   rider_enCamino?: number;
   pedidos_enCamino?: number;
 }
+interface DashboardPacks {
+    id: number;
+    client: string;
+    type: string;
+    created: string;
+    inWarehouse: string;
+    timeCall: string;
+    timeInDispatch: string;
+    timeDelivered: string;
+    timeReceived: string;
+    statusPack: string;
+    callP: number;
+    rider: number;
+    warehouse: number;
+    spot: string;
+    idLastMov: number;
+    timeLastMov: string;
+    idPClient: string;
+    destinatario: string;
+    email: string;
+    telephone: number;
+    cp: number;
+    street: string;
+    number: number;
+    "floor-dpto": string;
+    localidad: string;
+    provincia: string;
+    obs: string
+}
 
+
+const date=(date:any)=>new Date(date).toLocaleString()!=="Invalid Date"?new Date(date).toLocaleString():"-"
 function Dashboard() {
   const currentDate = new Date().toLocaleDateString();
   const [data, setData] = useState<DashboardData>()
+  const[showModal,setShowModal] = useState(false)
+  const [page, setPage] = useState<{ next: number, current: number }>({
+    next: 7,
+    current: 1
+  })
+  const [packs, setPacks] = useState<DashboardPacks[]>()
   const db = getFirestore();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    async function getPacks() {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`http://localhost:3001/auth/allPacks?page=${page.current}&limit=${page.next}`, config);
+        setPacks(response.data.data)
+      } catch (error) {
+        console.log('Error creating pack:', error);
+      }
+    }
+    getPacks()
+  }, [])
+
+
+
   useEffect(() => {
     onSnapshot(doc(db, "admin", "1"), (doc) => {
       setData(doc.data())
     })
   }, [])
+
+
+  const handlePage=(page:"next"|"last")=>{
+    
+  }
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -99,53 +164,46 @@ function Dashboard() {
             <th>Cliente</th>
             <th>Tamaño</th>
             <th>Fecha/Hora Ingreso</th>
-            <th>Fecha/Hora Pedido</th>
-            <th>Fecha/Hora Mesa</th>
-            <th>Salida Pedido</th>
+            <th>Fecha/Hora pedido</th>
+            <th>F.Hora mesa Sal.</th>
+            <th>pedido</th>
             <th>Ubicación</th>
+            <th>Rider</th>
             <th>Fecha/Hora Inicio Entrega</th>
             <th>Fecha/Hora Entrega</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>001</td>
-            <td>Cliente 1</td>
-            <td>Pequeño</td>
-            <td>2023-04-06 09:00:00</td>
-            <td>2023-04-06 09:15:00</td>
-            <td>2023-04-06 09:30:00</td>
-            <td>2023-04-06 09:45:00</td>
-            <td>Ubicación 1</td>
-            <td>2023-04-06 10:00:00</td>
-            <td>2023-04-06 10:15:00</td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td>Cliente 2</td>
-            <td>Mediano</td>
-            <td>2023-04-06 09:30:00</td>
-            <td>2023-04-06 09:45:00</td>
-            <td>2023-04-06 10:00:00</td>
-            <td>2023-04-06 10:15:00</td>
-            <td>Ubicación 2</td>
-            <td>2023-04-06 10:30:00</td>
-            <td>2023-04-06 10:45:00</td>
-          </tr>
-          <tr>
-            <td>003</td>
-            <td>Cliente 3</td>
-            <td>Pequeño</td>
-            <td>2023-04-06 12:32:12</td>
-            <td>2023-04-06 12:33:23</td>
-            <td>2023-04-06 12:35:15</td>
-            <td>2023-04-06 12:35:30</td>
-            <td>-</td>
-            <td>2023-04-06 12:40:30</td>
-            <td>-</td>
-          </tr>
+          {packs?.map(pack =>{
+            return (
+              <tr key={pack.id}>
+                <td>{pack.id}</td>
+                <td>{pack.client}</td>
+                <td>{pack.type}</td>
+                <td>{date(pack.inWarehouse)}</td>
+                <td>{date(pack.timeCall) }</td> 
+                <td>{date(pack.timeInDispatch)}</td>
+                <td>{pack.callP?"Si":"No"}</td>
+                <td>{pack.spot}</td>
+                <td>{pack.rider?`Rider ${pack.rider}`:
+                <button onClick={()=>setShowModal(!showModal)}>
+                  asignar
+                </button>
+                }</td>
+                <td>{date(pack.timeDelivered)}</td>
+                <td>{date(pack.timeReceived) }</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
+      {showModal&&
+        <div className="modal-content">
+          <div className="modal-header">
+          <button onClick={()=>setShowModal(!showModal)}>X</button>
+          </div>
+        </div>
+      }
     </div>
   );
 };

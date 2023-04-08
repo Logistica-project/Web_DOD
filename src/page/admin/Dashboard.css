@@ -12,11 +12,33 @@
   font-size: 18px;
 }
 
+.modal-content{
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  width: 100%;
+  height:100vh;
+  position: fixed;
+  inset: 0;
+  background-color: #0000007f;
+}
+.modal-header{
+  background-color: #fff;
+  width: 400px;
+  height:200px;
+  border-radius: 4px;
+
+}
 .dashboard-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 30px;
+  color:#000
+
+}
+.dashboard-header p,label{
+  color:#000
 }
 
 .dashboard-cards{

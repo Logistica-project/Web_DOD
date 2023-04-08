@@ -19,3 +19,14 @@ label,p,h2{
 button{
   cursor: pointer;
 }
+
+button:disabled{
+  background-color:#ccc;
+  color:rgb(175, 175, 175);
+}
+
+button:disabled:hover{
+  border: none;
+  background-color:#ccc;
+  color:rgb(175, 175, 175);
+}
