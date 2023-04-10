@@ -5,7 +5,7 @@ import QRCode from 'qrcode.react';
 import jwtDecode from 'jwt-decode';
 
 const Formulario: React.FC = () => {
-  const [client, setClient] = useState<number>(0);
+  const [client, setClient] = useState<number>(1);
   const [email, setEmail] = useState<string>('');
   const [destinatario, setDestinatario] = useState<string>('');
   const [number, setNumber] = useState<number>(0);

@@ -37,11 +37,11 @@ const Login: React.FC = () => {
       <div className="login-form">
       <label className="login-form-input">
         User:
-        <input  type="text" value={username} onChange={(e) => setUser(e.target.value)} />
+        <input  type="text" value={username}  placeholder='username' onChange={(e) => setUser(e.target.value)} />
       </label>
       <label className="login-form-input">
         Password:
-        <input  type="text" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input  type="text" value={password} placeholder='password' onChange={(e) => setPassword(e.target.value)} />
       </label>
       </div>
       <button className='login-form-button' onClick={handleLogin}>ingresar</button>

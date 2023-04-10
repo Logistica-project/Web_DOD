@@ -16,43 +16,55 @@ interface DashboardData {
   pedidos_totals?: number;
   rider_enCamino?: number;
   pedidos_enCamino?: number;
+} 
+
+interface rider {
+  active:number;
+  company:string
+  firstName:string
+  id:number
+  lastName:string
+  login:number
 }
 interface DashboardPacks {
-    id: number;
-    client: string;
-    type: string;
-    created: string;
-    inWarehouse: string;
-    timeCall: string;
-    timeInDispatch: string;
-    timeDelivered: string;
-    timeReceived: string;
-    statusPack: string;
-    callP: number;
-    rider: number;
-    warehouse: number;
-    spot: string;
-    idLastMov: number;
-    timeLastMov: string;
-    idPClient: string;
-    destinatario: string;
-    email: string;
-    telephone: number;
-    cp: number;
-    street: string;
-    number: number;
-    "floor-dpto": string;
-    localidad: string;
-    provincia: string;
-    obs: string
+  id: number;
+  client: string;
+  type: string;
+  created: string;
+  inWarehouse: string;
+  timeCall: string;
+  timeInDispatch: string;
+  timeDelivered: string;
+  timeReceived: string;
+  statusPack: string;
+  callP: number;
+  rider: number;
+  warehouse: number;
+  spot: string;
+  idLastMov: number;
+  timeLastMov: string;
+  idPClient: string;
+  destinatario: string;
+  email: string;
+  telephone: number;
+  cp: number;
+  street: string;
+  number: number;
+  "floor-dpto": string;
+  localidad: string;
+  provincia: string;
+  obs: string
 }
 
 
-const date=(date:any)=>new Date(date).toLocaleString()!=="Invalid Date"?new Date(date).toLocaleString():"-"
+const date = (date: any) => new Date(date).toLocaleString() !== "Invalid Date" ? new Date(date).toLocaleString() : "-"
 function Dashboard() {
   const currentDate = new Date().toLocaleDateString();
   const [data, setData] = useState<DashboardData>()
-  const[showModal,setShowModal] = useState(false)
+  const [riders, setRiders] = useState<rider[]>()
+  const [showModal, setShowModal] = useState(false)
+  const [reset,setReset]=useState(false)
+  const [idPack, setIds] = useState<number|null>(null)
   const [page, setPage] = useState<{ next: number, current: number }>({
     next: 7,
     current: 1
@@ -60,6 +72,7 @@ function Dashboard() {
   const [packs, setPacks] = useState<DashboardPacks[]>()
   const db = getFirestore();
   const token = localStorage.getItem('token');
+
   useEffect(() => {
     async function getPacks() {
       try {
@@ -68,14 +81,32 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`http://localhost:3001/auth/allPacks?page=${page.current}&limit=${page.next}`, config);
+        const response = await axios.get(`http://localhost:3001/admin/allPacks?page=${page.current}&limit=${page.next}`, config);
         setPacks(response.data.data)
       } catch (error) {
         console.log('Error creating pack:', error);
       }
     }
     getPacks()
-  }, [])
+  }, [reset])
+
+  useEffect(() => {
+    async function getRider() {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`http://localhost:3001/admin/activeRiders`, config);
+        console.log(response);
+        setRiders(response.data)
+      } catch (error) {
+        console.log('Error creating pack:', error);
+      }
+    }
+    getRider()
+  }, [reset])
 
 
 
@@ -86,8 +117,24 @@ function Dashboard() {
   }, [])
 
 
-  const handlePage=(page:"next"|"last")=>{
-    
+  const handlePage = (page: "next" | "last") => {
+
+  }
+
+  const handleAsignar = async (idRider:number) => {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.put(`http://localhost:3001/admin/asignRider`, {idRider,idPack},config);
+        console.log(response);
+        setReset(!reset)
+      } catch (error) {
+        console.log('Error creating pack:', error);
+      }
+
   }
 
   return (
@@ -174,33 +221,51 @@ function Dashboard() {
           </tr>
         </thead>
         <tbody>
-          {packs?.map(pack =>{
+          {packs?.map(pack => {
             return (
               <tr key={pack.id}>
                 <td>{pack.id}</td>
                 <td>{pack.client}</td>
                 <td>{pack.type}</td>
                 <td>{date(pack.inWarehouse)}</td>
-                <td>{date(pack.timeCall) }</td> 
+                <td>{date(pack.timeCall)}</td>
                 <td>{date(pack.timeInDispatch)}</td>
-                <td>{pack.callP?"Si":"No"}</td>
+                <td>{pack.callP ? "Si" : "No"}</td>
                 <td>{pack.spot}</td>
-                <td>{pack.rider?`Rider ${pack.rider}`:
-                <button onClick={()=>setShowModal(!showModal)}>
-                  asignar
-                </button>
+                <td>{pack.rider ? `Rider ${pack.rider}` :
+                  <button 
+                  disabled={pack.callP?false:true}
+                  onClick={() =>{
+                  setShowModal(!showModal)
+                  setIds(pack.id)}
+                  }>
+                    asignar
+                  </button>
                 }</td>
                 <td>{date(pack.timeDelivered)}</td>
-                <td>{date(pack.timeReceived) }</td>
+                <td>{date(pack.timeReceived)}</td>
               </tr>
             )
           })}
         </tbody>
       </table>
-      {showModal&&
+      {showModal &&
         <div className="modal-content">
           <div className="modal-header">
-          <button onClick={()=>setShowModal(!showModal)}>X</button>
+            <button onClick={() => setShowModal(!showModal)}>X</button>
+            <ul>
+              {riders?.map(item=>{
+                return(
+                  <li key={item.id} onClick={() => handleAsignar(item.id)}>
+                    <img src={`https://picsum.photos/200/300?random=${item.id}`}/>
+                    <div id="modal_text">
+                      <p>{item.firstName} {item.lastName}</p>
+                      <span>activos:{item.active?"si":"no"}</span>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
         </div>
       }
