@@ -65,10 +65,7 @@ function Dashboard() {
   const [showModal, setShowModal] = useState(false)
   const [reset,setReset]=useState(false)
   const [idPack, setIds] = useState<number|null>(null)
-  const [page, setPage] = useState<{ next: number, current: number }>({
-    next: 7,
-    current: 1
-  })
+  const [page, setPage] = useState<number>(1)
   const [packs, setPacks] = useState<DashboardPacks[]>()
   const db = getFirestore();
   const token = localStorage.getItem('token');
@@ -81,14 +78,15 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`http://localhost:3001/admin/allPacks?page=${page.current}&limit=${page.next}`, config);
+        const response = await axios.get(`http://localhost:3001/admin/allPacks?page=${page}&limit=7`, config);
         setPacks(response.data.data)
+
       } catch (error) {
         console.log('Error creating pack:', error);
       }
     }
     getPacks()
-  }, [reset])
+  }, [reset,page])
 
   useEffect(() => {
     async function getRider() {
@@ -99,7 +97,6 @@ function Dashboard() {
           },
         };
         const response = await axios.get(`http://localhost:3001/admin/activeRiders`, config);
-        console.log(response);
         setRiders(response.data)
       } catch (error) {
         console.log('Error creating pack:', error);
@@ -113,13 +110,12 @@ function Dashboard() {
   useEffect(() => {
     onSnapshot(doc(db, "admin", "1"), (doc) => {
       setData(doc.data())
+      setReset(!reset)
     })
   }, [])
 
 
-  const handlePage = (page: "next" | "last") => {
-
-  }
+ 
 
   const handleAsignar = async (idRider:number) => {
       try {
@@ -227,7 +223,7 @@ function Dashboard() {
                 <td>{pack.id}</td>
                 <td>{pack.client}</td>
                 <td>{pack.type}</td>
-                <td>{date(pack.inWarehouse)}</td>
+                <td>{date(pack.created)}</td>
                 <td>{date(pack.timeCall)}</td>
                 <td>{date(pack.timeInDispatch)}</td>
                 <td>{pack.callP ? "Si" : "No"}</td>
@@ -249,6 +245,15 @@ function Dashboard() {
           })}
         </tbody>
       </table>
+      <div className='page'>
+        <button onClick={()=> page&&setPage(page-1)}>
+        {`<`}
+
+        </button>
+        <button onClick={()=> setPage(page+1)}>
+        {`>`}
+        </button>
+      </div>
       {showModal &&
         <div className="modal-content">
           <div className="modal-header">

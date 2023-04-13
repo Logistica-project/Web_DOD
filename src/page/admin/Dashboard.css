@@ -139,3 +139,7 @@ p {
 span{
   color: #8e8e8e;
 }
+
+.page{
+  display: flex;
+}
