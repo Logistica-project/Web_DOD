@@ -47,9 +47,9 @@ const decodeToken= token&&jwtDecode(token)
       };
 
       // Realizar petición con axios y la configuración de headers
-      const response = await axios.post('http://localhost:3001/auth/CreatePack', data, config);
+      const response = await axios.post('https://prueba-logistica-jmpdy.ondigitalocean.app/auth/CreatePack', data, config);
       console.log('Pack created!', response.data);
-      setIdQr("http://localhost:3001/"+response.data.qrUrl)
+      setIdQr("https://prueba-logistica-jmpdy.ondigitalocean.app/"+response.data.qrUrl)
     } catch (error) {
       console.log('Error creating pack:', error);
     }

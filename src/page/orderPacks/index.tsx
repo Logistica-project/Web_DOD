@@ -24,8 +24,8 @@ const PackagePedir = () => {
 
   const handleVerifyClick = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/${packageId}`);
-      console.log(response);
+      const response = await axios.get(`https://prueba-logistica-jmpdy.ondigitalocean.app/${packageId}`);
+ 
  const data=response.data.length?response.data[0]:{err:true}
       setPackageData(data);
     } catch (error) {
@@ -36,10 +36,8 @@ const PackagePedir = () => {
 
   const handleOrderClick = async () => {
     try {
-      const response = await axios.put(`http://localhost:3001/orderPack/${packageId}`);
-      console.log(response);
-      console.log(response);
-      
+      const response = await axios.put(`https://prueba-logistica-jmpdy.ondigitalocean.app/orderPack/${packageId}`);
+    
     } catch (error) {
       console.error(error);
     }
@@ -69,7 +67,7 @@ const PackagePedir = () => {
       )}
 
       
-     {packageData?.callP ===1
+     {packageData?.callP ===  1
      && <div>
         <h2>EL paquete ya fue pedido</h2>
       </div>

@@ -78,7 +78,7 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`http://localhost:3001/admin/allPacks?page=${page}&limit=7`, config);
+        const response = await axios.get(`https://prueba-logistica-jmpdy.ondigitalocean.app/admin/allPacks?page=${page}&limit=7`, config);
         setPacks(response.data.data)
 
       } catch (error) {
@@ -96,7 +96,7 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`http://localhost:3001/admin/activeRiders`, config);
+        const response = await axios.get(`https://prueba-logistica-jmpdy.ondigitalocean.app/admin/activeRiders`, config);
         setRiders(response.data)
       } catch (error) {
         console.log('Error creating pack:', error);
@@ -124,7 +124,7 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.put(`http://localhost:3001/admin/asignRider`, {idRider,idPack},config);
+        const response = await axios.put(`https://prueba-logistica-jmpdy.ondigitalocean.app/admin/asignRider`, {idRider,idPack},config);
         console.log(response);
         setReset(!reset)
       } catch (error) {

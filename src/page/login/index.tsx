@@ -11,12 +11,11 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/login', {  username, password });
+      const response = await axios.post('https://prueba-logistica-jmpdy.ondigitalocean.app/login', {  username, password });
 
       localStorage.setItem('token', response.data);
 
       const decodedToken:{role:number} = jwtDecode(response.data);
-      console.log(decodedToken);
       
       if (response.status === 200 && decodedToken.role === 10) {
         navigate('/client');
