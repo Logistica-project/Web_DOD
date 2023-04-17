@@ -125,7 +125,6 @@ function Dashboard() {
           },
         };
         const response = await axios.put(`https://prueba-logistica-jmpdy.ondigitalocean.app/admin/asignRider`, {idRider,idPack},config);
-        console.log(response);
         setReset(!reset)
       } catch (error) {
         console.log('Error creating pack:', error);
