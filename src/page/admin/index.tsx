@@ -64,6 +64,7 @@ function Dashboard() {
   const [riders, setRiders] = useState<rider[]>()
   const [showModal, setShowModal] = useState(false)
   const [reset,setReset]=useState(false)
+  const [Loading,setLoading]=useState(true)
   const [idPack, setIds] = useState<number|null>(null)
   const [page, setPage] = useState<number>(1)
   const [packs, setPacks] = useState<DashboardPacks[]>()
@@ -80,7 +81,7 @@ function Dashboard() {
         };
         const response = await axios.get(`https://prueba-logistica-jmpdy.ondigitalocean.app/admin/allPacks?page=${page}&limit=7`, config);
         setPacks(response.data.data)
-
+        setLoading(false)
       } catch (error) {
         console.log('Error creating pack:', error);
       }
@@ -118,6 +119,8 @@ function Dashboard() {
  
 
   const handleAsignar = async (idRider:number) => {
+    setLoading(true)
+
       try {
         const config = {
           headers: {
@@ -126,10 +129,10 @@ function Dashboard() {
         };
         const response = await axios.put(`https://prueba-logistica-jmpdy.ondigitalocean.app/admin/asignRider`, {idRider,idPack},config);
         setReset(!reset)
+        setLoading(false)
       } catch (error) {
         console.log('Error creating pack:', error);
       }
-
   }
 
   return (
@@ -175,7 +178,6 @@ function Dashboard() {
           <div>
             <h3 className="dashboard-card-title">Pedidos en espera de rider</h3>
             <p className="dashboard-card-count">{data?.pedidos_EsperaRider}</p>
-
           </div>
         </div>
         <div className="dashboard-card">
@@ -199,6 +201,12 @@ function Dashboard() {
           </div>
         </div>
       </div>
+     
+      {Loading&&
+      <span id="loading">
+          cargando...
+      </span>}
+      
       <table className="dashboard-table">
         <thead>
           <tr>
