@@ -14,7 +14,7 @@ interface DashboardData {
   pedidos_enPrepara?: number;
   pedidos_EsperaRider?: number;
   pedidos_totals?: number;
-  rider_enCamino?: number;
+  rider_enCaminoAll?: number;
   pedidos_enCamino?: number;
 } 
 
@@ -197,7 +197,7 @@ function Dashboard() {
           </div>
           <div>
             <h3 className="dashboard-card-title">Riders en camino</h3>
-            <p className="dashboard-card-count">{data?.rider_enCamino}</p>
+            <p className="dashboard-card-count">{data?.rider_enCaminoAll}</p>
           </div>
         </div>
       </div>
