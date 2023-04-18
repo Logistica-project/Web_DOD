@@ -57,7 +57,7 @@ interface DashboardPacks {
 }
 
 
-const date = (date: any) => new Date(date).toLocaleString() !== "Invalid Date" ? date : "-"
+const date = (date: any) => new Date(date).toLocaleString() !== "Invalid Date" ? new Date(date).toLocaleString() : "-"
 function Dashboard() {
   const currentDate = new Date().toLocaleDateString();
   const [data, setData] = useState<DashboardData>()
