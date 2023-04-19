@@ -154,6 +154,10 @@ function Dashboard() {
       }
   }
 
+  const handleActualizar=()=>{
+    setReset(!reset)
+    setLoading(true)
+  }
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -225,7 +229,7 @@ function Dashboard() {
       <span id="loading">
           cargando...
       </span>}
-      
+      <button onClick={()=>handleActualizar()}> Actualizar tabla</button>
       <table className="dashboard-table">
         <thead>
           <tr>
@@ -274,7 +278,6 @@ function Dashboard() {
       <div className='page'>
         <button onClick={()=> page&&setPage(page-1)}>
         {`<`}
-
         </button>
         <button onClick={()=> setPage(page+1)}>
         {`>`}
