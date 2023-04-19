@@ -62,7 +62,7 @@ const PackagePedir = () => {
           <p>Domicilio: {packageData.street}</p>
           <p>Cod. Postal: {packageData.cp}</p>
           <p>Teléfono: {packageData.telephone}</p>
-          <button disabled={packageData.statusPack!==7} onClick={handleOrderClick}>Pedir</button>
+          <button disabled={packageData.statusPack>=7} onClick={handleOrderClick}>Pedir</button>
         </div>
       )}
 
