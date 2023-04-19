@@ -249,7 +249,7 @@ function Dashboard() {
                 <td>{pack.id}</td>
                 <td>{pack.client}</td>
                 <td>{pack.type}</td>
-                <td>{date(pack.created)}</td>
+                <td>{date(pack.inWarehouse)}</td>
                 <td>{date(pack.timeCall)}</td>
                 <td>{date(pack.timeInDispatch)}</td>
                 <td>{pack.callP ? "Si" : "No"}</td>
