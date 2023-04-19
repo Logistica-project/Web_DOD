@@ -16,6 +16,7 @@ interface PackageData {
 
 const PackagePedir = () => {
   const [packageId, setPackageId] = useState("");
+  const [Loading, setLoading] = useState(false);
   const [packageData, setPackageData] = useState<PackageData|null>(null);
 
   const handlePackageIdChange = (event:any) => {
@@ -35,16 +36,20 @@ const PackagePedir = () => {
   };
 
   const handleOrderClick = async () => {
+      setLoading(true)
     try {
       const response = await axios.put(`https://prueba-logistica-jmpdy.ondigitalocean.app/orderPack/${packageId}`);
-    
+
+      setLoading(false)
     } catch (error) {
       console.error(error);
     }
   };
 
+
   return (
     <div>
+    
       <label htmlFor="packageId">Número del paquete:</label>
       <input
         type="text"
@@ -62,11 +67,15 @@ const PackagePedir = () => {
           <p>Domicilio: {packageData.street}</p>
           <p>Cod. Postal: {packageData.cp}</p>
           <p>Teléfono: {packageData.telephone}</p>
-          <button disabled={packageData.statusPack<=7} onClick={handleOrderClick}>Pedir</button>
+          <button disabled={packageData.statusPack<7} onClick={handleOrderClick}>Pedir</button>
         </div>
       )}
 
       
+{Loading&&
+ <span id="loading">
+          cargando...
+  </span>}
      {packageData?.callP ===  1
      && <div>
         <h2>EL paquete ya fue pedido</h2>
