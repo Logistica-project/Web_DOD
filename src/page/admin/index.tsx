@@ -57,7 +57,26 @@ interface DashboardPacks {
 }
 
 
-const date = (date: any) => new Date(date).toLocaleString() !== "Invalid Date" ? new Date(date).toLocaleString() : "-"
+const date = (date: any) =>{
+  if( new Date(date).toLocaleString() == "Invalid Date") return "-" 
+
+  let fecha =  new Date(date)
+  let opcionesFormato:Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  };
+  let diferenciaHoraria = fecha.getTimezoneOffset() / 60;
+  fecha.setHours(fecha.getHours() + diferenciaHoraria);
+
+  return fecha.toLocaleString(Intl.DateTimeFormat().resolvedOptions().locale, opcionesFormato).replace(/[/]/g, '-');
+}
+
 function Dashboard() {
   const currentDate = new Date().toLocaleDateString();
   const [data, setData] = useState<DashboardData>()
