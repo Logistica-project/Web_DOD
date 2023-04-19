@@ -60,7 +60,7 @@ const PackagePedir = () => {
       <button onClick={handleVerifyClick}>Verificar</button>
 
 
-      {(packageData?.callP === 0 && !packageData.err) && (
+      {(packageData?.callP === 0 && !packageData.err && packageData?.statusPack !== 13 ) && (
         <div>
           <h2>Datos de envió</h2>
           <p>Destinatario: {packageData.destinatario}</p>
@@ -76,7 +76,7 @@ const PackagePedir = () => {
         <span id="loading">
           cargando...
         </span>}
-      {packageData?.callP === 1
+      {packageData?.callP === 1 && packageData?.statusPack !== 13   
         && <div>
           <h2>EL paquete ya fue pedido</h2>
         </div>
